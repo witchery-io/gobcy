@@ -14,7 +14,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -68,8 +70,10 @@ func postResponse(target *url.URL, encTarget interface{}, decTarget interface{})
 		err = respErrorMaker(resp.StatusCode, resp.Body)
 		return
 	}
-	dec := json.NewDecoder(resp.Body)
-	err = dec.Decode(decTarget)
+
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &decTarget)
 	return
 }
 
